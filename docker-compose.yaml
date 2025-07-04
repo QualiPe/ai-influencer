@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  contracts:
+    build:
+      context: ./contracts
+    volumes:
+      - ./contracts:/app
+    command: npx hardhat node
+    ports:
+      - "8545:8545"
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    depends_on:
+      - contracts
+
+  watcher:
+    build: ./watcher
+    env_file:
+      - .env
+    depends_on:
+      - backend
+      - contracts
