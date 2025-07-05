@@ -1,7 +1,6 @@
 import { google } from 'googleapis';
 import * as fs from 'fs';
 
-// Получи client_id, client_secret, refresh_token через Google Cloud Console (YouTube Data API v3)
 const CLIENT_ID = process.env.YT_CLIENT_ID!;
 const CLIENT_SECRET = process.env.YT_CLIENT_SECRET!;
 const REFRESH_TOKEN = process.env.YT_REFRESH_TOKEN!;
