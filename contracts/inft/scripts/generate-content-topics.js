@@ -241,15 +241,15 @@ async function main() {
     console.log("🎬 Generating detailed video description...");
     const videoPrompt = `Topic: ${topic}
 
-Create a detailed description (minimum 600 characters) for a 10-second video based on the topic above. The description should include:
+Create a detailed description (minimum 600 characters and max 1000 characters) for a 9-second video based on the topic above. The description should include:
 
 1. Visual elements and scenes
 2. Camera movements and angles
-3. Text overlays and graphics
 4. Color scheme and mood
 5. Specific actions and transitions
 6. Background music style
 7. Target audience engagement elements
+8. Without any text
 
 Make it comprehensive and detailed enough for a video editor to create the exact video. Focus on viral-worthy, engaging content that would perform well on social media.`;
     
@@ -261,15 +261,15 @@ Make it comprehensive and detailed enough for a video editor to create the exact
     console.log("🎵 Generating exact audio text...");
     const audioPrompt = `Topic: ${topic}
 
-Create the exact text that will be spoken in a 10-second video based on the topic above. The text should:
+Create the exact text that will be spoken in a 8-second video based on the topic above. The text should:
 
-1. Be exactly 10 seconds when spoken at normal pace
-2. Be engaging and conversational
-3. Include a hook at the beginning
-4. Have a clear call-to-action
-5. Be optimized for voice-over delivery
-6. Match the video description style
-7. Be suitable for social media platforms
+1. Be exactly 7 seconds when spoken at normal pace
+2. Include a hook at the beginning
+3. Be optimized for voice-over delivery
+4. Match the video description style
+5. Be suitable for social media platforms
+6. Short fact
+7. Only two sentences
 
 Write only the spoken text, no additional instructions or formatting.`;
     
