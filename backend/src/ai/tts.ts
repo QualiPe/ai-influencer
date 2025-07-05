@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
-import fs from 'fs/promises';
+import * as fs from 'fs/promises';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const ELEVEN_API_KEY = process.env.ELEVENLABS_API_KEY!;
+const ELEVEN_API_KEY = process.env.ELEVEN_API_KEY!;
 const VOICE_ID = 'EXAVITQu4vr4xnSDxMaL';
 
 export async function generateTTS(text: string, outFile: string) {

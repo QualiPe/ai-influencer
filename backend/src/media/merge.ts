@@ -1,4 +1,5 @@
-import ffmpeg from 'fluent-ffmpeg';
+import * as ffmpegImport from 'fluent-ffmpeg';
+const ffmpeg: any = ffmpegImport;
 
 export async function mergeAV(
   videoPath: string,
@@ -19,7 +20,7 @@ export async function mergeAV(
 
     command
       .on('end', () => resolve())
-      .on('error', err => reject(err))
+      .on('error', (err: any) => reject(err))
       .save(outPath);
   });
 }
