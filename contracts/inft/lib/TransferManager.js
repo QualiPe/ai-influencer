@@ -46,3 +46,5 @@ class TransferManager {
         return await tx.wait();
     }
 }
+
+module.exports = TransferManager;

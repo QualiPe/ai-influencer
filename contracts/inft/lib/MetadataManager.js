@@ -38,8 +38,8 @@ class MetadataManager {
             );
             
             // Generate metadata hash
-            const metadataHash = ethers.utils.keccak256(
-                ethers.utils.toUtf8Bytes(JSON.stringify(metadata))
+            const metadataHash = ethers.keccak256(
+                ethers.toUtf8Bytes(JSON.stringify(metadata))
             );
             
             return {
