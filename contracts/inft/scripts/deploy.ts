@@ -1,16 +1,16 @@
-const { ethers } = require("hardhat");
+const { ethers: hardhatEthers } = require("hardhat");
 
-async function main() {
-    const [deployer] = await ethers.getSigners();
+async function deployINFT() {
+    const [deployer] = await hardhatEthers.getSigners();
     console.log("Deploying contracts with account:", deployer.address);
     
     // Deploy mock oracle for testing (replace with real oracle in production)
-    const MockOracle = await ethers.getContractFactory("MockOracle");
+    const MockOracle = await hardhatEthers.getContractFactory("MockOracle");
     const oracle = await MockOracle.deploy();
     await oracle.waitForDeployment();
     
     // Deploy INFT contract
-    const INFT = await ethers.getContractFactory("INFT");
+    const INFT = await hardhatEthers.getContractFactory("INFT");
     const inft = await INFT.deploy(
         "AI Agent NFTs",
         "AINFT",
@@ -22,7 +22,7 @@ async function main() {
     console.log("INFT deployed to:", await inft.getAddress());
 }
 
-main().catch((error) => {
+deployINFT().catch((error) => {
     console.error(error);
     process.exitCode = 1;
 });

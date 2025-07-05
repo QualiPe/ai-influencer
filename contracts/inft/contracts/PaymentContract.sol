@@ -46,7 +46,7 @@ contract PaymentContract is ReentrancyGuard, Ownable {
     // State variables
     uint256 private _paymentIds = 0;
     uint256 public serviceFee = 250; // 2.5% (250 basis points)
-    uint256 public minPaymentAmount = 0.001 ether;
+    uint256 public minPaymentAmount = 0; // No minimum payment amount
     uint256 public maxPaymentAmount = 10 ether;
 
     // Mappings
@@ -56,7 +56,7 @@ contract PaymentContract is ReentrancyGuard, Ownable {
 
     // Modifiers
     modifier validAmount(uint256 amount) {
-        require(amount >= minPaymentAmount, "Amount too low");
+        require(amount > 0, "Amount must be greater than 0");
         require(amount <= maxPaymentAmount, "Amount too high");
         _;
     }
@@ -84,7 +84,6 @@ contract PaymentContract is ReentrancyGuard, Ownable {
         validMessage(message)
     {
         require(msg.sender != address(0), "Invalid sender");
-        require(msg.sender != owner(), "Owner cannot send to self");
 
         uint256 paymentId = _paymentIds;
         uint256 feeAmount = (msg.value * serviceFee) / 10000;
