@@ -1,28 +1,42 @@
-version: '3.8'
-
 services:
   contracts:
     build:
-      context: ./contracts
+      context: ./contracts/inft
+    container_name: ai-influencer-contracts
+    restart: unless-stopped
+    env_file:
+      - ./contracts/inft/.env
     volumes:
-      - ./contracts:/app
+      - ./contracts/inft:/app
     command: npx hardhat node
     ports:
       - "8545:8545"
+    working_dir: /app
 
   backend:
     build: ./backend
-    ports:
-      - "3001:3001"
+    container_name: ai-influencer-backend
+    restart: unless-stopped
     env_file:
-      - .env
+      - ./backend/.env
+    volumes:
+      - ./backend/shared:/app/shared
+      - ./backend:/app
+    working_dir: /app
+    command: ["npm", "start"]
     depends_on:
       - contracts
 
   watcher:
     build: ./watcher
+    container_name: ai-influencer-watcher
+    restart: unless-stopped
     env_file:
-      - .env
+      - ./watcher/.env
+    volumes:
+      - ./watcher:/app
+    working_dir: /app
+    command: ["npm", "start"]
     depends_on:
       - backend
       - contracts
