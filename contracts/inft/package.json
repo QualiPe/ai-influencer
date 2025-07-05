@@ -10,9 +10,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@0glabs/0g-serving-broker": "^0.2.13",
     "@0glabs/0g-ts-sdk": "^0.3.0",
     "@openzeppelin/contracts": "^5.3.0",
     "ethers": "6.13.1",
+    "@types/crypto-js": "^4.2.2",
+    "crypto-js": "^4.2.0",
     "hardhat": "^2.25.0"
   },
   "devDependencies": {
