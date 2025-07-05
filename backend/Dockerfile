@@ -5,4 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-CMD ["npx", "hardhat", "node", "--hostname", "0.0.0.0"]
+
+RUN npx tsc
+
+CMD ["node", "dist/index.js"]
