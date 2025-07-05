@@ -67,19 +67,31 @@ bot.action('tts_gen', async ctx => {
 });
 
 bot.action('video_gen', async ctx => {
-    await ctx.reply('Generating video content...');
-    try {
-      const outFile = await generateContent();
-      if (!outFile) {
-        await ctx.reply('There are not theme for videos.');
-        return;
-      }
-      await ctx.replyWithVideo({ source: outFile });
-    } catch (e: any) {
-      await ctx.reply('Generation error: ' + e.message);
-    }
-    await ctx.answerCbQuery();
+  await ctx.reply('Generating video content...');
+  try {
+    const outFile = path.resolve(SHARED_DIR, 'test_video.mp4');
+    await fs.copyFile(path.resolve(SHARED_DIR, 'video.mp4'), outFile);
+    await ctx.replyWithVideo({ source: outFile });
+  } catch (e: any) {
+    await ctx.reply('Generation error: ' + e.message);
+  }
+  await ctx.answerCbQuery();
 });
+
+// bot.action('video_gen', async ctx => {
+//     await ctx.reply('Generating video content...');
+//     try {
+//       const outFile = await generateContent();
+//       if (!outFile) {
+//         await ctx.reply('There are not theme for videos.');
+//         return;
+//       }
+//       await ctx.replyWithVideo({ source: outFile });
+//     } catch (e: any) {
+//       await ctx.reply('Generation error: ' + e.message);
+//     }
+//     await ctx.answerCbQuery();
+// });
 
 bot.action('upload', async ctx => {
   try {
