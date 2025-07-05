@@ -5,11 +5,16 @@ import { main as generateContent } from '../index';
 import { getNextTopic } from '../topics/utils';
 import { generatePrompt } from '../ai/gpt';
 import { uploadToYouTube } from '../youtube/upload';
+import { generateTTS as synthTTS } from '../ai/tts';
+import { mergeAV } from '../media/merge';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN!;
 const SHARED_DIR = path.resolve(__dirname, '../../shared');
+
+let lastVideoPath: string | null = null;
+let lastAudioPath: string | null = null;
 
 const bot = new Telegraf(TG_BOT_TOKEN);
 
@@ -18,7 +23,9 @@ bot.start(async ctx => {
     '🤖 I am AI-Influencer. What do you want?',
     Markup.inlineKeyboard([
       [Markup.button.callback('📝 Generate promt', 'promt_gen')],
+      [Markup.button.callback('🔊 Generate audio', 'tts_gen')],
       [Markup.button.callback('🎬 Generate video', 'video_gen')],
+      [Markup.button.callback('🔀 Merge video + audio', 'merge')],
       [Markup.button.callback('⬆️ Upload last video on YouTube', 'upload')]
     ])
   );
@@ -36,6 +43,25 @@ bot.action('promt_gen', async ctx => {
     await ctx.reply('Generated prompt:\n\n' + prompt);
   } catch (e: any) {
     await ctx.reply('Generation error: ' + e.message);
+  }
+  await ctx.answerCbQuery();
+});
+
+bot.action('tts_gen', async ctx => {
+  await ctx.reply('Generating audio...');
+  try {
+    const topic = await getNextTopic();
+    if (!topic) {
+      await ctx.reply('There are no themes for audio.');
+      return;
+    }
+    const prompt = await generatePrompt(topic);
+    const audioPath = path.resolve(SHARED_DIR, `${topic.replace(/[^a-z0-9]/gi, '_')}.wav`);
+    await synthTTS(prompt, audioPath);
+    lastAudioPath = audioPath;
+    await ctx.replyWithAudio({ source: audioPath });
+  } catch (e: any) {
+    await ctx.reply('TTS generation error: ' + e.message);
   }
   await ctx.answerCbQuery();
 });
@@ -77,6 +103,57 @@ bot.action('upload', async ctx => {
     await ctx.reply('Downloading error: ' + e.message);
   }
   await ctx.answerCbQuery();
+});
+
+bot.action('merge', async ctx => {
+  await ctx.reply('Send me a video file, then an audio file, then press this button again to merge!');
+  if (!lastVideoPath || !lastAudioPath) {
+    await ctx.reply('Please upload both a video and an audio file to the bot as files.');
+    return;
+  }
+  try {
+    const outPath = path.resolve(SHARED_DIR, 'merged_' + Date.now() + '.mp4');
+    await mergeAV(lastVideoPath, lastAudioPath, outPath);
+    await ctx.replyWithVideo({ source: outPath });
+  } catch (e: any) {
+    await ctx.reply('Merge error: ' + e.message);
+  }
+  await ctx.answerCbQuery();
+});
+
+bot.on('video', async ctx => {
+  const fileId = ctx.message.video.file_id;
+  const link = await ctx.telegram.getFileLink(fileId);
+  const videoPath = path.resolve(SHARED_DIR, 'uploaded_video_' + Date.now() + '.mp4');
+  const res = await fetch(link.href);
+  const buf = Buffer.from(await res.arrayBuffer());
+  await fs.writeFile(videoPath, buf);
+  lastVideoPath = videoPath;
+  await ctx.reply('Video uploaded!');
+});
+
+bot.on('voice', async ctx => {
+  const file = ctx.message.voice;
+  const fileId = file.file_id;
+  const link = await ctx.telegram.getFileLink(fileId);
+  const audioPath = path.resolve(SHARED_DIR, 'uploaded_audio_' + Date.now() + '.wav');
+  const res = await fetch(link.href);
+  const buf = Buffer.from(await res.arrayBuffer());
+  await fs.writeFile(audioPath, buf);
+  lastAudioPath = audioPath;
+  await ctx.reply('Audio uploaded!');
+});
+
+bot.on('audio', async ctx => {
+  const file = ctx.message.audio;
+  const fileId = file.file_id;
+  const link = await ctx.telegram.getFileLink(fileId);
+  const audioPath = path.resolve(SHARED_DIR, 'uploaded_audio_' + Date.now() + '.wav');
+  const res = await fetch(link.href);
+  const buf = Buffer.from(await res.arrayBuffer());
+  await fs.writeFile(audioPath, buf);
+  lastAudioPath = audioPath;
+  await ctx.reply('Audio uploaded!');
 });
 
 export function launchBot() {
