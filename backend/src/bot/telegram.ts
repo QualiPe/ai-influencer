@@ -98,7 +98,7 @@ bot.action('upload', async ctx => {
     const files = await fs.readdir(SHARED_DIR);
     const stats = await Promise.all(
         files
-          .filter(f => f.endsWith('_final.mp4'))
+          .filter(f => f.endsWith('test_video.mp4'))
           .map(async f => ({
             file: f,
             mtime: (await fs.stat(path.join(SHARED_DIR, f))).mtimeMs,
