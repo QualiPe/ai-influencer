@@ -20,8 +20,8 @@
 
 ## ✨ Decentralised tools
 
-| Layer  | Tech | Magic |
-|--------|------|-------|
+|  Layer  | Tech | Magic |
+|---------|------|-------|
 | De Hosting | **Fluence** | All containers live on a peer node you pay for **directly with a wallet**, so even hosting is automated |
 | De Compute | **0G Compute** (Galileo testnet) | Runs an LLaMA-based agent that brainstorms prompts and call-sheets on demand |
 | Chain | **HardHat + Ethers.js** | Solidity contract accepts donations + messages that steer future content |
