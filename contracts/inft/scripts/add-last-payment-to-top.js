@@ -3,26 +3,21 @@ const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
 
-// PaymentContract address (deployed on 0G testnet) - No minimum amount version
 const PAYMENT_CONTRACT_ADDRESS = "0xd3d4c6b01059586aCa7EBdd5827Eb020896Bc1A4";
 
-// PaymentContract ABI (only the events we need)
 const PAYMENT_CONTRACT_ABI = [
   "event PaymentReceived(uint256 indexed paymentId, address indexed from, address indexed to, uint256 amount, string message, uint256 timestamp)"
 ];
 
-// File paths
 const TOPICS_FILE = path.join(__dirname, "../../../backend/src/topics/topics.txt");
 
 async function addLastPaymentToTop() {
   try {
     console.log("📝 Adding last payment message to top of topics.txt...\n");
 
-    // Initialize provider
     const provider = new ethers.JsonRpcProvider("https://og-testnet-evm.itrocket.net");
     console.log("🔗 Connected to 0G Testnet");
 
-    // Create contract instance
     const paymentContract = new ethers.Contract(
       PAYMENT_CONTRACT_ADDRESS,
       PAYMENT_CONTRACT_ABI,
@@ -34,11 +29,9 @@ async function addLastPaymentToTop() {
     console.log("   Topics file:", TOPICS_FILE);
     console.log("");
 
-    // Get current block
     const currentBlock = await provider.getBlockNumber();
     console.log("Current block:", currentBlock);
 
-    // Get events from the last 2000 blocks to capture recent payments
     const fromBlock = Math.max(0, currentBlock - 2000);
     console.log("Searching from block:", fromBlock, "to", currentBlock);
 
@@ -49,7 +42,6 @@ async function addLastPaymentToTop() {
       return;
     }
 
-    // Get the last (most recent) payment event
     const lastEvent = events[events.length - 1];
     const { paymentId, from, to, amount, message, timestamp } = lastEvent.args;
     
@@ -63,7 +55,6 @@ async function addLastPaymentToTop() {
     console.log("   Block:", lastEvent.blockNumber);
     console.log("");
 
-    // Read current topics file
     let currentContent = "";
     try {
       currentContent = fs.readFileSync(TOPICS_FILE, 'utf8');
@@ -72,10 +63,8 @@ async function addLastPaymentToTop() {
       currentContent = "# AI Influencer Content Topics\n# Generated from blockchain payments\n\n";
     }
 
-    // Add the message to the top
     const updatedContent = message + "\n\n" + currentContent;
 
-    // Write back to file
     fs.writeFileSync(TOPICS_FILE, updatedContent);
 
     console.log("✅ Last payment message added to top of backend/src/topics/topics.txt:");
@@ -84,7 +73,6 @@ async function addLastPaymentToTop() {
     console.log("   💰 Amount:", ethers.formatEther(amount), "ETH");
     console.log("");
 
-    // Show file preview
     const lines = updatedContent.split('\n').slice(0, 8);
     console.log("📄 Backend topics.txt preview (first 8 lines):");
     lines.forEach((line, index) => {
@@ -103,5 +91,4 @@ async function addLastPaymentToTop() {
   }
 }
 
-// Run the script
 addLastPaymentToTop(); 

@@ -4,12 +4,10 @@ async function deployINFT() {
     const [deployer] = await hardhatEthers.getSigners();
     console.log("Deploying contracts with account:", deployer.address);
     
-    // Deploy mock oracle for testing (replace with real oracle in production)
     const MockOracle = await hardhatEthers.getContractFactory("MockOracle");
     const oracle = await MockOracle.deploy();
     await oracle.waitForDeployment();
     
-    // Deploy INFT contract
     const INFT = await hardhatEthers.getContractFactory("INFT");
     const inft = await INFT.deploy(
         "AI Agent NFTs",

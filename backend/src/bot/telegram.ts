@@ -320,7 +320,6 @@ function runSendPayment(): Promise<{
             return;
           }
           
-          // Если не удалось извлечь адрес контракта, используем захардкоженный
           if (!contractAddress) {
             contractAddress = '0xd3d4c6b01059586aCa7EBdd5827Eb020896Bc1A4';
           }

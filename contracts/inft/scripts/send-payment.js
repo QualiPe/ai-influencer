@@ -1,10 +1,8 @@
 const { ethers } = require("ethers");
 require("dotenv").config();
 
-// PaymentContract address (deployed on 0G testnet) - No minimum amount version
 const PAYMENT_CONTRACT_ADDRESS = "0xd3d4c6b01059586aCa7EBdd5827Eb020896Bc1A4";
 
-// PaymentContract ABI (only the functions we need)
 const PAYMENT_CONTRACT_ABI = [
   "function sendPayment(string memory message) external payable",
   "function sendPaymentTo(address recipient, string memory message) external payable",
@@ -18,15 +16,12 @@ async function sendPayment() {
   try {
     console.log("💰 Starting Payment Script...\n");
 
-    // Check if PRIVATE_KEY is set
     if (!process.env.PRIVATE_KEY) {
       throw new Error("PRIVATE_KEY not found in .env file");
     }
 
-    // Initialize provider and wallet
     const provider = new ethers.JsonRpcProvider("https://og-testnet-evm.itrocket.net");
     
-    // Get private key from .env and ensure it doesn't have 0x prefix
     let privateKey = process.env.PRIVATE_KEY;
     if (privateKey.startsWith('0x')) {
       privateKey = privateKey.slice(2);
@@ -36,14 +31,12 @@ async function sendPayment() {
     const wallet = new ethers.Wallet(formattedPrivateKey, provider);
     console.log("🔑 Wallet address:", wallet.address);
 
-    // Create contract instance
     const paymentContract = new ethers.Contract(
       PAYMENT_CONTRACT_ADDRESS,
       PAYMENT_CONTRACT_ABI,
       wallet
     );
 
-    // Get contract info
     console.log("📋 Contract Information:");
     console.log("   Contract address:", PAYMENT_CONTRACT_ADDRESS);
     
@@ -54,7 +47,6 @@ async function sendPayment() {
     console.log("   Max payment:", ethers.formatEther(maxAmount), "ETH");
     console.log("");
 
-    // Get current stats
     const stats = await paymentContract.getContractStats();
     console.log("📊 Current Contract Stats:");
     console.log("   Total payments:", Number(stats.totalPayments));
@@ -62,8 +54,7 @@ async function sendPayment() {
     console.log("   Current balance:", ethers.formatEther(stats.currentBalance), "ETH");
     console.log("");
 
-    // Payment parameters
-    const paymentAmount = ethers.parseEther("0.00001"); // 0.00001 ETH (very small amount - no minimum)
+    const paymentAmount = ethers.parseEther("0.00001");
     const message = "Hi! I’d love to see more content on microorganisms in arid zones. Hope you’ll consider it next time))";
 
     console.log("💸 Sending Payment:");
@@ -71,19 +62,16 @@ async function sendPayment() {
     console.log("   Message:", message);
     console.log("");
 
-    // Send payment
     console.log("🚀 Sending transaction...");
     const tx = await paymentContract.sendPayment(message, { value: paymentAmount });
     console.log("   Transaction hash:", tx.hash);
     
-    // Wait for confirmation
     console.log("⏳ Waiting for confirmation...");
     const receipt = await tx.wait();
     console.log("   Block number:", receipt.blockNumber);
     console.log("   Gas used:", receipt.gasUsed.toString());
     console.log("");
 
-    // Get payment details
     const newStats = await paymentContract.getContractStats();
     const paymentId = Number(newStats.totalPayments);
     
@@ -92,7 +80,6 @@ async function sendPayment() {
     console.log("   Transaction confirmed in block:", receipt.blockNumber);
     console.log("");
 
-    // Get payment details
     try {
       const payment = await paymentContract.getPayment(paymentId);
       console.log("📋 Payment Details:");
@@ -104,7 +91,6 @@ async function sendPayment() {
       console.log("   Timestamp:", new Date(Number(payment.timestamp) * 1000).toLocaleString());
       console.log("");
 
-      // Updated stats
       const updatedStats = await paymentContract.getContractStats();
       console.log("📊 Updated Contract Stats:");
       console.log("   Total payments:", Number(updatedStats.totalPayments));
@@ -128,5 +114,4 @@ async function sendPayment() {
   }
 }
 
-// Run the script
 sendPayment(); 

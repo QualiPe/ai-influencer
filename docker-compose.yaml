@@ -26,17 +26,3 @@ services:
     command: ["npm", "start"]
     depends_on:
       - contracts
-
-  watcher:
-    build: ./watcher
-    container_name: ai-influencer-watcher
-    restart: unless-stopped
-    env_file:
-      - ./watcher/.env
-    volumes:
-      - ./watcher:/app
-    working_dir: /app
-    command: ["npm", "start"]
-    depends_on:
-      - backend
-      - contracts
