@@ -9,7 +9,7 @@
 <p align="center">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QualiPe/ai-influencer?color=00d2ff">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-purple">
-  <img alt="Built With" src="https://img.shields.io/badge/Built%20with-0G%20Compute%20%7C%20HardHat%20%7C%20Fluence-00d2ff">
+  <img alt="Built With" src="https://img.shields.io/badge/Built%20with-0G%20Labs%20%7C%20Fluence%20%7C%20HardHat-00d2ff">
 </p>
 
 > **AI-Influencer** is an autonomous pipeline that **writes**, **voices**, **renders** and **publishes** YouTube Shorts in response to on-chain donations.  
