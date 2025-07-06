@@ -20,8 +20,8 @@
 
 ## ✨ Decentralised tools
 
-|   Layer     | Tech | Magic |
-|-------------|------|-------|
+|   Layer   | Tech | Magic |
+|-----------|------|-------|
 | De Hosting | **Fluence** | All containers live on a peer node you pay for **directly with a wallet**, so even hosting is automated |
 | De Compute | **0G Compute** (Galileo testnet) | Runs an LLaMA-based agent that brainstorms prompts and call-sheets on demand |
 | Chain | **HardHat + Ethers.js** | Solidity contract accepts donations + messages that steer future content |
@@ -50,3 +50,43 @@
 │        ▼            │ uploads                           │
 │    YouTube Shorts API ◀─────────────────────────────────┘
 └─────────────────────────────────────────────────────────┘
+
+
+
+🚀 Quick start
+1 · Clone the repo
+git clone https://github.com/QualiPe/ai-influencer.git
+cd ai-influencer
+
+2 · Add your secrets
+Create two files and paste in your keys:
+	•	backend/.env – TG_BOT_TOKEN, OPENAI_API_KEY, ELEVENLABS_API_KEY, YouTube keys …
+	•	contracts/inft/.env – your 0G test-net private key (the bot spends & receives ETH here).
+
+cp backend/.env.example backend/.env
+cp contracts/inft/.env.example contracts/inft/.env
+nano backend/.env            # edit tokens
+nano contracts/inft/.env     # edit private key
+
+The same wallet later pays Fluence for the peer and buys 0G compute / storage credits; it also receives on-chain tips.
+
+3 · Build & run (Docker only)
+docker compose build    # one-off
+docker compose up -d    # start in background
+
+Containers:
+	•	ai-influencer-backend – NestJS + Telegram bot + FFmpeg worker
+	•	ai-influencer-contracts – HardHat node + inft scripts (tips & topics)
+
+4 · Talk to your creator bot
+Open Telegram → /start → choose:
+	•	Generate prompt → 0G compute (LLaMA)
+	•	Generate video / audio → Luma AI + ElevenLabs
+	•	Merge & Upload → FFmpeg → YouTube Shorts
+	•	Send payment → on-chain tip; message auto-appended to content plan.
+
+5 · Top-up and let it self-fund
+	1.	Send a little Testnet ETH (Galileo) to the wallet you put in contracts/inft/.env.
+	2.	Fund your Fluence peer and 0G credits from that same wallet – the bot now pays its own bills with YouTube revenue and future tips.
+
+Your autonomous AI-Influencer is live, crafting Shorts end-to-end without a central server. 🎬
