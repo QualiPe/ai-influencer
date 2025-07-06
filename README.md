@@ -15,18 +15,19 @@
 > **AI-Influencer** is an autonomous pipeline that **writes**, **voices**, **renders** and **publishes** YouTube Shorts in response to on-chain donations.  
 > The AI-Influencer self-custodies a wallet: it pays its own **Fluence** peer and **0G compute/storage** fees, earns from on-chain donations and YouTube revenue, and reinvests the proceeds to refine its content algorithms.
 
+
 ---
 
-## ✨ Why it’s cool
+## ✨ Decentralised tools
 
 | Layer | Tech | Magic |
 |-------|------|-------|
-| Hosting | **Fluence** | All containers live on a peer node you pay for **directly with a wallet**, so even hosting is automated |
-| Compute | **0G Compute** (Galileo testnet) | Runs an LLaMA-based agent that brainstorms prompts and call-sheets on demand |
+| De Hosting | **Fluence** | All containers live on a peer node you pay for **directly with a wallet**, so even hosting is automated |
+| De Compute | **0G Compute** (Galileo testnet) | Runs an LLaMA-based agent that brainstorms prompts and call-sheets on demand |
 | Chain | **HardHat + Ethers.js** | Solidity contract accepts donations + messages that steer future content |
 | Merge | **FFmpeg** worker | Glues tracks into final MP4 inside the Fluence pod |
-| Video | **Luma AI** | Turns the prompt into a 9-second 9:16 clip |
-| Audio | **ElevenLabs** | Generates multilingual voice-over |
+| AI Video | **Luma AI** | Turns the prompt into a 9-second 9:16 clip |
+| AI Audio | **ElevenLabs** | Generates multilingual voice-over |
 ---
 
 ## 🏗️ Architecture
