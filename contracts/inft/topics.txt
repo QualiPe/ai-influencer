@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-Tell how the weather prediction works
-
-# AI Influencer Content Topics
-# Generated from blockchain payments
-# Last updated: 7/5/2025, 10:26:59 PM
-
-Tell how the weather prediction works
-
 =======
 - Web3 Development Hacks - Quick tips to optimize blockchain application development
 - Crypto Market Analysis in 10 Seconds - Technical breakdown of current market trends

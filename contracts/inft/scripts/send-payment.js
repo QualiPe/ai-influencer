@@ -64,7 +64,7 @@ async function sendPayment() {
 
     // Payment parameters
     const paymentAmount = ethers.parseEther("0.00001"); // 0.00001 ETH (very small amount - no minimum)
-    const message = "Tell how the weather prediction works";
+    const message = "Hi! I’d love to see more content on microorganisms in arid zones. Hope you’ll consider it next time))";
 
     console.log("💸 Sending Payment:");
     console.log("   Amount:", ethers.formatEther(paymentAmount), "ETH");

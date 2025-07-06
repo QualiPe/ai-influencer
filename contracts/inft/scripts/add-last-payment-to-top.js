@@ -12,7 +12,7 @@ const PAYMENT_CONTRACT_ABI = [
 ];
 
 // File paths
-const TOPICS_FILE = path.join(__dirname, "../topics.txt");
+const TOPICS_FILE = path.join(__dirname, "../../../backend/src/topics/topics.txt");
 
 async function addLastPaymentToTop() {
   try {
@@ -68,7 +68,7 @@ async function addLastPaymentToTop() {
     try {
       currentContent = fs.readFileSync(TOPICS_FILE, 'utf8');
     } catch (error) {
-      console.log("⚠️ Could not read topics.txt, creating new file");
+      console.log("⚠️ Could not read backend/src/topics/topics.txt, creating new file");
       currentContent = "# AI Influencer Content Topics\n# Generated from blockchain payments\n\n";
     }
 
@@ -78,7 +78,7 @@ async function addLastPaymentToTop() {
     // Write back to file
     fs.writeFileSync(TOPICS_FILE, updatedContent);
 
-    console.log("✅ Last payment message added to top of topics.txt:");
+    console.log("✅ Last payment message added to top of backend/src/topics/topics.txt:");
     console.log("   📝 Added:", message);
     console.log("   📊 Payment ID:", Number(paymentId));
     console.log("   💰 Amount:", ethers.formatEther(amount), "ETH");
@@ -86,7 +86,7 @@ async function addLastPaymentToTop() {
 
     // Show file preview
     const lines = updatedContent.split('\n').slice(0, 8);
-    console.log("📄 Topics.txt preview (first 8 lines):");
+    console.log("📄 Backend topics.txt preview (first 8 lines):");
     lines.forEach((line, index) => {
       if (line.trim()) {
         console.log(`   ${index + 1}: ${line}`);
@@ -95,7 +95,7 @@ async function addLastPaymentToTop() {
     console.log("");
 
     console.log("🌐 View contract on explorer: https://chainscan-galileo.0g.ai/address/" + PAYMENT_CONTRACT_ADDRESS);
-    console.log("✅ Last payment message successfully added to top!");
+    console.log("✅ Last payment message successfully added to backend topics!");
 
   } catch (error) {
     console.error("❌ Error adding last payment to top:", error.message);

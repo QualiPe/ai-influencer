@@ -24,14 +24,15 @@ const bot = new Telegraf(TG_BOT_TOKEN!, {
 
 bot.start(async ctx => {
   await ctx.reply(
-    '🤖 I am AI-Influencer. What do you want?',
+    '📲 This is the control center for AI influencers. What would you like to do?',
     Markup.inlineKeyboard([
       [Markup.button.callback('📝 Generate prompt', 'promt_gen')],
       [Markup.button.callback('🔊 Generate audio', 'tts_gen')],
       [Markup.button.callback('🎬 Generate video', 'video_gen')],
       [Markup.button.callback('🔀 Merge video + audio', 'merge')],
-      [Markup.button.callback('⬆️ Upload last video on YouTube', 'upload')],
-      [Markup.button.callback('🚀 Full pipeline', 'full_pipeline')]
+      [Markup.button.callback('📺 Upload video on YouTube', 'upload')],
+      [Markup.button.callback('🚀 Launch full pipeline', 'full_pipeline')],
+      [Markup.button.callback('📩 Send payment', 'send_payment')],
     ])
   );
 });
@@ -236,6 +237,169 @@ bot.on('audio', async ctx => {
   lastAudioPath = audioPath;
   await ctx.reply('Audio uploaded!');
 });
+
+bot.action('send_payment', async ctx => {
+  try {
+    await ctx.answerCbQuery();
+  } catch (e) {
+    console.log('Callback query already expired, continuing...');
+  }
+  await ctx.reply('New payment was detected for AI-naturalist');
+  try {
+    const { 
+      message, 
+      from, 
+      to, 
+      amount,
+      contractAddress
+    } = await runSendPayment();
+    
+    const transactionInfo = `💰 **Payment Transaction Details**
+
+    📝 **Message:** ${message}
+
+    👤 **From:** \`${from}\`
+    👥 **To:** \`${to}\`
+    💎 **Amount:** ${amount}
+
+    🌐 **Explorer:** https://chainscan-galileo.0g.ai/address/${contractAddress}`;
+    
+    await ctx.reply(transactionInfo, { parse_mode: 'Markdown' });
+  } catch (e: any) {
+    await ctx.reply('Payment processing error: ' + e);
+  }
+
+  await new Promise(r => setTimeout(r, 3000));
+  await ctx.reply('🗂 Topic logged. Contribution registered — content roadmap updated accordingly.');
+
+});
+
+function runSendPayment(): Promise<{ 
+  message: string; 
+  from: string; 
+  to: string; 
+  amount: string; 
+  contractAddress: string; 
+}> {
+  return new Promise((resolve, reject) => {
+    const scriptPath = path.resolve(__dirname, '../../../contracts/inft/scripts/add-last-payment-to-top.js');
+    exec(
+      `node "${scriptPath}"`,
+      { cwd: path.resolve(__dirname, '../../../') },
+      async (error, stdout, stderr) => {
+        if (error) {
+          reject(`Running script error: ${stderr || error.message}`);
+          return;
+        }
+        try {
+          const lines = stdout.split('\n');
+          let message = '';
+          let from = '';
+          let to = '';
+          let amount = '';
+          let contractAddress = '';
+          
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            
+            if (trimmedLine.includes('From:') && !trimmedLine.includes('From payment:')) {
+              from = trimmedLine.split('From:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('To:') && !trimmedLine.includes('To payment:')) {
+              to = trimmedLine.split('To:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('Amount:') && !trimmedLine.includes('Total volume:')) {
+              amount = trimmedLine.split('Amount:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('Message:') && !trimmedLine.includes('Message from payment:')) {
+              message = trimmedLine.split('Message:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('Contract address:') && !trimmedLine.includes('Contract address:')) {
+              contractAddress = trimmedLine.split('Contract address:')[1]?.trim() || '';
+            }
+          }
+          
+          if (!message) {
+            reject('Could not extract message from script output');
+            return;
+          }
+          
+          // Если не удалось извлечь адрес контракта, используем захардкоженный
+          if (!contractAddress) {
+            contractAddress = '0xd3d4c6b01059586aCa7EBdd5827Eb020896Bc1A4';
+          }
+          
+          resolve({ 
+            message, 
+            from, 
+            to, 
+            amount,
+            contractAddress
+          });
+        } catch (e: any) {
+          reject('Transaction data extraction error: ' + e.message);
+        }
+      }
+    );
+  });
+}
+
+function runSendNewPayment(): Promise<{ 
+  from: string; 
+  to: string; 
+  amount: string; 
+  message: string; 
+  txHash: string; 
+}> {
+  return new Promise((resolve, reject) => {
+    const scriptPath = path.resolve(__dirname, '../../../contracts/inft/scripts/send-payment.js');
+    exec(
+      `node "${scriptPath}"`,
+      { cwd: path.resolve(__dirname, '../../../') },
+      async (error, stdout, stderr) => {
+        if (error) {
+          reject(`Running send-payment script error: ${stderr || error.message}`);
+          return;
+        }
+        try {
+          const lines = stdout.split('\n');
+          let from = '';
+          let to = '';
+          let amount = '';
+          let message = '';
+          let txHash = '';
+          
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            
+            if (trimmedLine.includes('From:') && !trimmedLine.includes('From payment:')) {
+              from = trimmedLine.split('From:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('To:') && !trimmedLine.includes('To payment:')) {
+              to = trimmedLine.split('To:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('Amount:') && !trimmedLine.includes('Total volume:')) {
+              amount = trimmedLine.split('Amount:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('Message:') && !trimmedLine.includes('Message from payment:')) {
+              message = trimmedLine.split('Message:')[1]?.trim() || '';
+            } else if (trimmedLine.includes('Transaction hash:') && !trimmedLine.includes('Transaction hash:')) {
+              txHash = trimmedLine.split('Transaction hash:')[1]?.trim() || '';
+            }
+          }
+          
+          if (!txHash) {
+            reject('Could not extract transaction hash from script output');
+            return;
+          }
+          
+          resolve({ 
+            from, 
+            to, 
+            amount, 
+            message, 
+            txHash 
+          });
+        } catch (e: any) {
+          reject('New payment data extraction error: ' + e.message);
+        }
+      }
+    );
+  });
+}
 
 export function launchBot() {
   bot.launch();
