@@ -13,7 +13,7 @@
 </p>
 
 > **AI-Influencer** is an autonomous pipeline that **writes**, **voices**, **renders** and **publishes** YouTube Shorts in response to on-chain donations.  
-> Every step — from prompt generation to video upload — runs inside Docker containers pinned to a **Fluence peer**, so the whole show is serverless-style and wallet-payable.
+> The AI-Influencer self-custodies a wallet: it pays its own **Fluence** peer and **0G compute/storage** fees, earns from on-chain donations and YouTube revenue, and reinvests the proceeds to refine its content algorithms.
 
 ---
 
